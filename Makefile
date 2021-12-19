@@ -20,6 +20,6 @@ lint:
 	# This is linter for Dockerfiles
 	hadolint Dockerfile
 	# This is a linter for php source code linter: https://www.pylint.org
-	phplint ./esoft_portal  --extensions=php  
+	phplint ./esoft_portal  --extensions=php  --no-configuration  
 
 all: install lint test
