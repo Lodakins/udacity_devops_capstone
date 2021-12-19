@@ -21,7 +21,6 @@ jobs:
   lint-files:
     docker:
       - image: php:8.0.2-alpine3.12
-      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run: apk add --update curl
@@ -37,7 +36,11 @@ jobs:
       - run:
           name: run lint
           command: |
-            make lint 
+            # See local hadolint install instructions:   https://github.com/hadolint/hadolint
+            # This is linter for Dockerfiles
+            hadolint Dockerfile
+            # This is a linter for php source code linter: https://www.pylint.org
+            phplint ./esoft_portal  --extensions=php  --no-configuration
 
   # build-backend:
   #   docker:
