@@ -11,7 +11,6 @@ commands:
             aws cloudformation delete-stack --stack-name eksctl-udadevopscluster-nodegroup-nodegroup --region us-east-1
             aws cloudformation delete-stack --stack-name eksctl-udadevopscluster-cluster --region us-east-1
 
-
 jobs:
   lint-files:
     docker:
@@ -36,92 +35,89 @@ jobs:
             hadolint Dockerfile
             # This is a linter for php source code linter: https://github.com/overtrue/phplint
             ./vendor/bin/phplint ./esoft_portal  --extensions=php  --no-configuration
-      
+
   build-docker-image:
-      machine: true
-      steps:
-        - checkout
-        - run:
-            name: Build docker esoft docker image
-            command: |
-              TAG=v.1
-              dockerpath=lodakins/esoft_portal:$TAG
-              docker build --tag esoft_portal:$TAG .
-              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-              docker tag esoft_portal:$TAG $dockerpath
-              docker push $dockerpath
-    
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build docker esoft docker image
+          command: |
+            TAG=v.1
+            dockerpath=lodakins/esoft_portal:$TAG
+            docker build --tag esoft_portal:$TAG .
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker tag esoft_portal:$TAG $dockerpath
+            docker push $dockerpath
+
   deploy-cluster:
-      docker:
-        - image: amazon/aws-cli
-      steps:
-        - checkout
-        - run:
-            name: install dependencies
-            command: |
-              yum install -y curl tar gzip openssl
-              curl --silent --location -o /kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
-              chmod +x ./kubectl
-              mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-              echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-              kubectl version --short --client
-              curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-              mv /tmp/eksctl /usr/local/bin
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            yum install -y curl tar gzip openssl
+            curl --silent --location -o /kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+            echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+            kubectl version --short --client
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
 
-        - run:
-            name: Create EKS Cluster
-            command: |
-              cd .circleci/
-              ls -al
-              rm ./kubeconfig
-              eksctl create cluster --region=us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d -f cluster.yml
-              config=$(cat /root/.kube/config)
-              echo ${config} >> ./kubeconfig
-              kubectl get nodes
-              kubectl get pods -A -o wide
+      - run:
+          name: Create EKS Cluster
+          command: |
+            cd .circleci/
+            ls -al
+            rm ./kubeconfig
+            eksctl create cluster --region=us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d -f cluster.yml
+            config=$(cat /root/.kube/config)
+            echo ${config} >> ./kubeconfig
+            kubectl get nodes
+            kubectl get pods -A -o wide
 
-        - persist_to_workspace:
-            root: ~/
-            paths:
-              - project/.circleci/kubeconfig
-        # rollback on failure      
-        - destroy-cluster
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/kubeconfig
+      # rollback on failure
+      - destroy-cluster
 
   deploy-blue-version:
-      docker: 
-        - image: amazon/aws-cli
-      steps:
-        - checkout
-        - run:
-            name: install dependencies
-            command: |
-              yum install -y curl tar gzip openssl
-              curl --silent -o /usr/local/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
-              chmod +x ./usr/local/bin/kubectl
-              mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-              echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-              kubectl version --short --client
-              curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-              mv /tmp/eksctl /usr/local/bin
-        
-        - attach_workspace:
-            at: ~/
-        
-        - run:
-            name: Deploy Docker Application
-            command: |
-              aws eks --region us-east-1 update-kubeconfig --name udadevopscluster
-              cd backend/
-              ls -al
-              kubectl get svc
-              kubectl apply -f .
-              kubectl get pods,deploy,svc -o wide --show-labels  
-        
-        # Here's where you will add some code to rollback on failure      
-        - destroy-cluster
-    
-                            
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            yum install -y curl tar gzip openssl
+            curl --silent -o /usr/local/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl
+            chmod +x ./usr/local/bin/kubectl
+            mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+            echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+            kubectl version --short --client
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+            mv /tmp/eksctl /usr/local/bin
 
+      - attach_workspace:
+          at: ~/
+
+      - run:
+          name: Deploy Docker Application
+          command: |
+            aws eks --region us-east-1 update-kubeconfig --name udadevopscluster
+            cd backend/
+            ls -al
+            kubectl get svc
+            kubectl apply -f .
+            kubectl get pods,deploy,svc -o wide --show-labels
+
+      # Here's where you will add some code to rollback on failure
+      - destroy-cluster
 
 workflows:
   esoft-portal-v1:
@@ -132,7 +128,7 @@ workflows:
           requires: [lint-files]
           filters:
             branches:
-                only: master
+              only: master
 
       - deploy-cluster:
           requires: [build-docker-image]
@@ -145,7 +141,5 @@ workflows:
           filters:
             branches:
               only: master
-
-
 #       docker tag local-image:tagname new-repo:tagname
 # docker push new-repo:tagname
