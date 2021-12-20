@@ -110,7 +110,7 @@ jobs:
       - run:
           name: Deploy Docker Application
           command: |
-            aws eks --region us-east-1 update-kubeconfig --name udadevopscluster1
+            aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
             cd backend/
             kubectl apply -f deploy.yml
             kubectl get pods,deploy,svc -o wide --show-labels
@@ -140,7 +140,7 @@ jobs:
       - run:
               name: Deploy Docker Application
               command: |
-                aws eks --region us-east-1 update-kubeconfig --name udadevopscluster1
+                aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
                 cd backend/
                 ls -al
                 kubectl get svc
