@@ -1,0 +1,8 @@
+path: ./esoft_portal
+jobs: 10
+cache: build/phplint.cache
+extensions:
+  - php
+exclude:
+  - vendor
+warning: false
