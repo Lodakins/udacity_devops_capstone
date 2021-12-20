@@ -72,7 +72,7 @@ jobs:
           command: |
             cd .circleci/
             ls -al
-            eksctl create cluster --region=us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d -f cluster.yml
+            eksctl create cluster -f cluster.yml
             config=$(cat /root/.kube/config)
             echo ${config} >> ./kubeconfig
             kubectl get nodes
