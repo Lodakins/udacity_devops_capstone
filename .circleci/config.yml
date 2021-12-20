@@ -110,8 +110,9 @@ jobs:
             cd backend/
             ls -al
             kubectl get svc
-            kubectl apply -f .
+            kubectl apply -f deploy.yml
             kubectl get pods,deploy,svc -o wide --show-labels
+            kubectl apply -f service.yaml
         # rollback on failure
       - destroy-cluster
 
