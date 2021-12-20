@@ -8,8 +8,8 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name eksctl-udadevopscluster-nodegroup-ng-1 
-            aws cloudformation delete-stack --stack-name eksctl-udadevopscluster-cluster
+            aws cloudformation delete-stack --stack-name eksctl-udadevopscluster1-nodegroup-ng-1 
+            aws cloudformation delete-stack --stack-name eksctl-udadevopscluster1-cluster
 jobs:
   lint-files:
     docker:
@@ -108,7 +108,7 @@ jobs:
       - run:
           name: Deploy Docker Application
           command: |
-            aws eks --region us-east-1 update-kubeconfig --name udadevopscluster
+            aws eks --region us-east-1 update-kubeconfig --name udadevopscluster1
             cd backend/
             ls -al
             kubectl get svc
@@ -139,7 +139,7 @@ jobs:
       - run:
               name: Deploy Docker Application
               command: |
-                aws eks --region us-east-1 update-kubeconfig --name udadevopscluster
+                aws eks --region us-east-1 update-kubeconfig --name udadevopscluster1
                 cd backend/
                 ls -al
                 kubectl get svc
