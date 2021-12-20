@@ -114,9 +114,9 @@ jobs:
             kubectl get svc
             kubectl apply -f deploy.yml
             kubectl get pods,deploy,svc -o wide --show-labels
-            kubectl apply -f service.yml
             kubectl get pods -o wide
             kubectl get nodes -o wide
+            kubectl get pods,deploy,svc -o wide --show-labels
         # rollback on failure
       - destroy-cluster
 
