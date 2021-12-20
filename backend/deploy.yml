@@ -2,10 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: esoft-portal
-  namespace: default
 
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: esoft-portal
@@ -16,26 +15,7 @@ spec:
     spec:
       containers:
       - name: esoft-portal
-        image: lodakins/esoft_portal:v.1
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 80
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 80
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        image: lodakins/esoft_portal:v.2
         ports:
         - containerPort: 80
 ---
@@ -49,5 +29,5 @@ spec:
     app: esoft-portal
   ports:
     - protocol: TCP
-      port: 8081
+      port: 80
       targetPort: 80

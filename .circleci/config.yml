@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Build docker esoft docker image
           command: |
-            TAG=v.1
+            TAG=v.2
             dockerpath=lodakins/esoft_portal:$TAG
             docker build --tag esoft_portal:$TAG .
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
@@ -74,9 +74,11 @@ jobs:
             ls -al
             eksctl create cluster -f cluster.yml
             config=$(cat /root/.kube/config)
+            echo config
             echo ${config} >> ./kubeconfig
             kubectl get nodes
             kubectl get pods -A -o wide
+            kubectl get svc
 
       - persist_to_workspace:
           root: ~/
@@ -110,8 +112,6 @@ jobs:
           command: |
             aws eks --region us-east-1 update-kubeconfig --name udadevopscluster1
             cd backend/
-            ls -al
-            kubectl get svc
             kubectl apply -f deploy.yml
             kubectl get pods,deploy,svc -o wide --show-labels
             kubectl get pods -o wide
