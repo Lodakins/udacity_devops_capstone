@@ -48,7 +48,7 @@ jobs:
               dockerpath=lodakins/esoft_portal:$TAG
               docker build --tag esoft_portal:$TAG .
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-              docker tag esoft_portal:latest $dockerpath
+              docker tag esoft_portal:$TAG $dockerpath
               docker push $dockerpath
     
   deploy-cluster:
