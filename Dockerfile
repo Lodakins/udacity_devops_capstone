@@ -1,9 +1,7 @@
-FROM php:7.2-apache-stretch
+FROM php:7.2-apache
 
+COPY ./esoft_portal /var/www/html/
 
-COPY ./esoft_portal /var/www/html
+EXPOSE 80
 
-EXPOSE 8080
-
-
-
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
