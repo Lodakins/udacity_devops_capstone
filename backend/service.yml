@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: esoft_portal
+  name: esoft-portal
 spec:
   type: LoadBalancer 
   selector:
-    app: esoft_portal
+    app: web
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3111
+      targetPort: 80

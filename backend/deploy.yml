@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: esoft_portal
+  name: esoft-portal
   namespace: default
 
 spec:
@@ -15,7 +15,7 @@ spec:
         app: web
     spec:
       containers:
-      - name: esoft_portal
+      - name: esoft-portal
         image: lodakins/esoft_portal:v.1
         resources:
           requests:
