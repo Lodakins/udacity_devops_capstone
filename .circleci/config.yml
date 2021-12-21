@@ -136,16 +136,22 @@ jobs:
             kubectl version --short --client
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
             mv /tmp/eksctl /usr/local/bin
+            curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - attach_workspace:
+          at: ~/
       - run:
-              name: Deploy Docker Application
-              command: |
-                aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
-                cd backend/
-                ls -al
-                kubectl get svc
-                kubectl apply -f .
-                kubectl get pods,deploy,svc -o wide --show-labels
-            # rollback on failure
+          name: Deploy Docker Application
+          command: |
+            aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
+            cd backend/
+            kubectl apply -f deploy.yml
+            kubectl get pods,deploy,svc -o wide --show-labels
+            kubectl get pods -o wide
+            kubectl get nodes -o wide
+            kubectl get pods,deploy,svc -o wide --show-labels
+            kubectl get svc
+        # rollback on failure
       - destroy-cluster
 
 workflows:
