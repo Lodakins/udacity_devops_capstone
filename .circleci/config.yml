@@ -151,9 +151,9 @@ jobs:
 workflows:
   esoft-portal-v1:
     jobs:
-      # - lint-files
+      - lint-files
       - build-docker-image:
-          # requires: [lint-files]
+          requires: [lint-files]
           filters:
             branches:
               only: master

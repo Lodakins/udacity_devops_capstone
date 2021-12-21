@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: esoft-cluster
+  name: udadevopscluster1
   region: eu-west-1
 
 nodeGroups:
