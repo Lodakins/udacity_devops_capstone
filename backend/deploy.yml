@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: esoft-portal
-        image: lodakins/esoft_portal:v.2
+        image: lodakins/esoft_portal:v.3
         ports:
         - containerPort: 80
 ---

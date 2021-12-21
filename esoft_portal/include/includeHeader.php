@@ -28,12 +28,12 @@
                                     <ul>
                                         <li class=""><a href="index.php">Home</a>
                                         </li>
-                                        <!-- <li class=""><a href="about.php">About</a>
+                                        <li class=""><a href="about.php">About</a>
                                         </li>
                                         <li><a href="services.php">Services</a></li>
                                         <li><a href="listing.php">Listings</a></li>
                                         <li><a href="blog.php">Blog</a></li>
-                                        <li><a href="contact.php">Contact</a></li> -->
+                                        <li><a href="contact.php">Contact</a></li>
                                     </ul>
                                 </div>
                             </nav>

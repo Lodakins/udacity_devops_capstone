@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Build docker esoft docker image
           command: |
-            TAG=v.2
+            TAG=v.3
             dockerpath=lodakins/esoft_portal:$TAG
             docker build --tag esoft_portal:$TAG .
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
@@ -141,14 +141,12 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Deploy Docker Application
+          name: Deploy Docker Application v3
           command: |
             aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
             cd backend/
-            kubectl apply -f deploy.yml
-            kubectl get pods,deploy,svc -o wide --show-labels
-            kubectl get pods -o wide
-            kubectl get nodes -o wide
+            kubectl set image deployment.apps/esoft-portal esoft-portal=lodakins/esoft_portal:v.3
+            kubectl rollout status deployment/esoft-portal
             kubectl get pods,deploy,svc -o wide --show-labels
             kubectl get svc
         # rollback on failure
@@ -175,5 +173,11 @@ workflows:
           filters:
             branches:
               only: master
+      
+      - deploy-green-version:
+          requires: [build-docker-image]
+          filters:
+            branches:
+              only: green-version
 #       docker tag local-image:tagname new-repo:tagname
 # docker push new-repo:tagname
