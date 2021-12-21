@@ -158,10 +158,7 @@ workflows:
       - lint-files
       - build-docker-image:
           requires: [lint-files]
-          filters:
-            branches:
-              only: master
-
+          
       - deploy-cluster:
           requires: [build-docker-image]
           filters:
