@@ -141,7 +141,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Deploy Docker Application v3
+          name: Deploy Docker Application v2
           command: |
             aws eks --region eu-west-1 update-kubeconfig --name udadevopscluster1
             cd backend/
